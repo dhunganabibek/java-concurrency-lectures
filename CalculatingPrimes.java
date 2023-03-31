@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class CalculatingPrimes {
   public static void main(String[] args) {
+
+    List<Thread> threads = new ArrayList<>();
     while (true) {
       Scanner sc = new Scanner(System.in);
       System.out.println("I can tell you nth prime. Enter n");
@@ -17,9 +21,29 @@ public class CalculatingPrimes {
         }
       };
       Thread t = new Thread(r);
+      threads.add(t);
       t.start();
 
+      Runnable statusReporter = () -> {
+        while (true) {
+          try {
+            Thread.sleep(5000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          printThreads(threads);
+        }
+      };
+      Thread reporterThread = new Thread(statusReporter);
+      reporterThread.start();
+
     }
+  }
+
+  public static void printThreads(List<Thread> threads) {
+    System.out.println("Thread status");
+    threads.forEach((thread) -> System.out.println(thread.getState()));
+    System.out.println();
   }
 }
 
